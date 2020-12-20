@@ -19,7 +19,7 @@ class Receiver : IReceiver {
     private var disposable: Disposable? = null
     private var server: MyWebSocketServer? = null
     private var message = MutableLiveData<String>()
-    
+
     override fun onConnect() {
     }
 
