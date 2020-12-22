@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,5 +14,12 @@ class MainActivity : AppCompatActivity() {
             this.window.statusBarColor = resources.getColor(R.color.white)
         }
         setContentView(R.layout.activity_main)
+        initUI()
+    }
+
+    private fun initUI() {
+        settings_iv.setOnClickListener {
+
+        }
     }
 }
