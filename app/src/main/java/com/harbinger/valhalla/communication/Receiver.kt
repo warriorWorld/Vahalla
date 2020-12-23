@@ -18,6 +18,7 @@ import java.net.InetSocketAddress
 class Receiver : IReceiver {
     private var disposable: Disposable? = null
     private var server: MyWebSocketServer? = null
+    private var address = MutableLiveData<String>()
     private var message = MutableLiveData<String>()
 
     override fun onConnect() {
@@ -45,12 +46,17 @@ class Receiver : IReceiver {
                     }
                 }
                 server?.start()
+                address.value = "ws:${it.hostAddress}:$port"
                 println("ws:${it.hostAddress}:$port")
             }
     }
 
     override fun getMessage(): LiveData<String> {
         return message
+    }
+
+    override fun getAddress(): LiveData<String> {
+        return address
     }
 
     override fun release() {

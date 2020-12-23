@@ -7,6 +7,8 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.harbinger.valhalla.communication.Receiver
 import com.harbinger.valhalla.communication.Sender
+import com.harbinger.valhalla.dialog.ListDialog
+import com.harbinger.valhalla.listener.OnListDialogClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -33,8 +35,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         settings_iv.setOnClickListener {
-
+            showOptionsDialog()
         }
+    }
+
+    private fun showOptionsDialog() {
+        val options = arrayOf("作为服务器", "作为客户端")
+        val dialog = ListDialog(this)
+        dialog.show()
+        dialog.setOptionsList(options)
+        dialog.setOnListDialogClickListener(object : OnListDialogClickListener {
+            override fun onItemClick(selectedRes: String?, selectedCodeRes: String?) {
+            }
+
+            override fun onItemClick(selectedRes: String?) {
+            }
+
+            override fun onItemClick(position: Int) {
+            }
+        })
     }
 
     override fun onDestroy() {

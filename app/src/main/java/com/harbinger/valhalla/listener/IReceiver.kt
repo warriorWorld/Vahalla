@@ -11,5 +11,6 @@ interface IReceiver {
     fun onError(msg:String)
     fun registReceiver()
     fun getMessage(): LiveData<String>
+    fun getAddress(): LiveData<String>
     fun release()
 }
