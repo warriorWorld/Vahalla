@@ -3,7 +3,6 @@ package com.harbinger.valhalla.communication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.harbinger.valhalla.listener.IReceiver
-import com.harbinger.valhalla.listener.MessageListener
 import com.harbinger.valhalla.utils.NetUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,22 +14,16 @@ import java.net.InetSocketAddress
 /**
  * Created by acorn on 2020/12/20.
  */
-class Receiver : IReceiver {
+class Server : IReceiver {
     private var disposable: Disposable? = null
     private var server: MyWebSocketServer? = null
     private var address = MutableLiveData<String>()
-    private var message = MutableLiveData<String>()
 
-    override fun onConnect() {
+    override fun sendMessage(message: String) {
+        server?.sender?.send(message)
     }
 
-    override fun onDisconnect() {
-    }
-
-    override fun onError(msg: String) {
-    }
-
-    override fun registReceiver() {
+    override fun initReceiver() {
         val port = 43496
         disposable = Observable.create<InetAddress> {
             it.onNext(NetUtils.getLocalIPAddress())
@@ -40,11 +33,6 @@ class Receiver : IReceiver {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 server = MyWebSocketServer(InetSocketAddress(it, port))
-                server?.messageListener = object : MessageListener {
-                    override fun onMessage(msg: String?) {
-                        message.value = msg
-                    }
-                }
                 server?.start()
                 address.value = "ws:${it.hostAddress}:$port"
                 println("ws:${it.hostAddress}:$port")
@@ -52,7 +40,7 @@ class Receiver : IReceiver {
     }
 
     override fun getMessage(): LiveData<String> {
-        return message
+        return server?.getMessage()!!
     }
 
     override fun getAddress(): LiveData<String> {

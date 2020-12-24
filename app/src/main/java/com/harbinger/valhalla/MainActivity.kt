@@ -5,15 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.harbinger.valhalla.communication.Receiver
-import com.harbinger.valhalla.communication.Sender
+import com.harbinger.valhalla.communication.Server
+import com.harbinger.valhalla.communication.Customer
 import com.harbinger.valhalla.dialog.ListDialog
+import com.harbinger.valhalla.listener.ICommunicator
 import com.harbinger.valhalla.listener.OnListDialogClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    private val receiver = Receiver()
-    private val sender = Sender()
+    private var communicator: ICommunicator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +22,7 @@ class MainActivity : AppCompatActivity() {
             this.window.statusBarColor = resources.getColor(R.color.white)
         }
         setContentView(R.layout.activity_main)
-        initCommunication()
         initUI()
-    }
-
-    private fun initCommunication() {
-        receiver.registReceiver()
-        receiver.getMessage().observe(this, Observer {
-
-        })
     }
 
     private fun initUI() {
@@ -52,12 +44,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onItemClick(position: Int) {
+                when (position) {
+                    0 -> {
+                        communicator = Server()
+
+                    }
+                }
             }
         })
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        receiver.release()
+        communicator?.release()
     }
 }

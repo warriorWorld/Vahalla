@@ -1,10 +1,11 @@
 package com.harbinger.valhalla.communication
 
-import android.util.Log
-import com.harbinger.valhalla.listener.MySocketListener
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
 
 /**
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit
  */
 class SocketManager private constructor() {
     private val TAG = "SocketManager"
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS) //连接超时
         .pingInterval(60L, TimeUnit.SECONDS) //心跳间隔
@@ -26,7 +28,7 @@ class SocketManager private constructor() {
 
     companion object {
         lateinit var url: String
-
+        val message = MutableLiveData<String>()
         val instance: WebSocket by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { SocketManager().getSocket() }
     }
 
@@ -36,6 +38,11 @@ class SocketManager private constructor() {
             .header("token", "mockToken")
             .header("userId", "acorn")
             .build()
-        return client.newWebSocket(request, MySocketListener())
+        return client.newWebSocket(request, object : WebSocketListener() {
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                super.onMessage(webSocket, text)
+                message.value = text
+            }
+        })
     }
 }
