@@ -5,6 +5,7 @@ import android.text.ClipboardManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.harbinger.valhalla.communication.Customer
 import com.harbinger.valhalla.communication.Server
 import com.harbinger.valhalla.dialog.*
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private var communicator: ICommunicator? = null
     private val clip = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    private var isMyRound = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +110,14 @@ class MainActivity : AppCompatActivity() {
             })
             .create()
             .show()
+    }
+
+    private fun beginObserve() {
+        communicator?.getMessage()?.observe(this, object : Observer<String> {
+            override fun onChanged(t: String?) {
+
+            }
+        })
     }
 
     private fun showToast(msg: String) {
