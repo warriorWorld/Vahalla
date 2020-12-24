@@ -18,4 +18,8 @@ class Customer : ISender {
     override fun getMessage(): LiveData<String> {
         return SocketManager.message
     }
+
+    override fun release() {
+        SocketManager.instance.close(0, null)
+    }
 }
