@@ -22,9 +22,9 @@ abstract class StatusTask(private val mStatus: String) {
     /// @param reason 由于什么原因导致状态切换到此
     /// @param res 上次的状态切换时是否有res
     /// @param lastStatus 切换前的状态
-    abstract fun onDoing(res: Any, lastStatus: String)
+    abstract fun onDoing(res: Any?=null, lastStatus: String?)
 
-    abstract fun onFinally(res: Any, nextStatus: String)
+    abstract fun onFinally(res: Any?=null, nextStatus: String)
 
     fun finish(nextStatus: String, res: Any? = null) {
         if (!isFinished) {

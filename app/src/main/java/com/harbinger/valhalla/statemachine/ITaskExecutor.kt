@@ -6,8 +6,8 @@ package com.harbinger.valhalla.statemachine
 abstract class ITaskExecutor {
     abstract fun getCurrentTask(): StatusTask?
     abstract fun finshCurrentExecuteNext(
-        nextStatus: String,
+        nextStatusTask: String,
         res: Any? = null,
-        currentStatus: StatusTask? = null
-    )
+        currentStatusTask: StatusTask? = null
+    ): Boolean
 }
