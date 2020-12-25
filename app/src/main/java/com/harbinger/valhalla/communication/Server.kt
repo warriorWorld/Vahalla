@@ -2,6 +2,7 @@ package com.harbinger.valhalla.communication
 
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.harbinger.valhalla.bean.MessageBean
 import com.harbinger.valhalla.listener.CommunicatorListener
 import com.harbinger.valhalla.listener.ServerInitListener
@@ -48,13 +49,13 @@ class Server : IReceiver {
                 server?.communicatorListener = object : CommunicatorListener {
                     override fun onGetMessage(message: String) {
                         Log.d(TAG, "onGetMessage:$message")
-                        val messageBean = gson.fromJson(message, MessageBean::class.java)
-                        if (null != messageBean) {
+                        try {
+                            val messageBean = gson.fromJson(message, MessageBean::class.java)
                             onReceiveMessageListener?.onReceiveMessage(
                                 messageBean.msg,
                                 messageBean.details
                             )
-                        } else {
+                        } catch (e: JsonSyntaxException) {
                             onReceiveMessageListener?.onReceiveMessage(message)
                         }
                     }
