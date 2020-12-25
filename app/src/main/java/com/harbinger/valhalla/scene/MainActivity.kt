@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         settings_iv.setOnClickListener {
             showOptionsDialog()
         }
+        start_iv.setOnClickListener {
+            communicator?.sendMessage(Message.CONNECTED)
+        }
     }
 
     private fun showOptionsDialog() {

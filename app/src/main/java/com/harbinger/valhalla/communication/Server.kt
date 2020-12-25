@@ -34,7 +34,7 @@ class Server : IReceiver {
     }
 
     override fun initReceiver(listener: ServerInitListener) {
-        val port = 43496
+        val port = 43497
         disposable = Observable.create<InetAddress> {
             it.onNext(NetUtils.getLocalIPAddress())
             it.onComplete()
