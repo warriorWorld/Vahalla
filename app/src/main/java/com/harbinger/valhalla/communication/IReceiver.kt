@@ -1,6 +1,6 @@
-package com.harbinger.valhalla.listener
+package com.harbinger.valhalla.communication
 
-import androidx.lifecycle.LiveData
+import com.harbinger.valhalla.listener.ServerInitListener
 
 /**
  * Created by acorn on 2020/12/20.

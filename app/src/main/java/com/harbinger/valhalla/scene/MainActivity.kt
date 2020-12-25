@@ -1,23 +1,33 @@
-package com.harbinger.valhalla
+package com.harbinger.valhalla.scene
 
 import android.os.Bundle
 import android.text.ClipboardManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import com.harbinger.valhalla.communication.Customer
-import com.harbinger.valhalla.communication.Server
+import com.harbinger.valhalla.R
+import com.harbinger.valhalla.communication.*
 import com.harbinger.valhalla.dialog.*
-import com.harbinger.valhalla.listener.ICommunicator
 import com.harbinger.valhalla.listener.OnListDialogClickListener
 import com.harbinger.valhalla.listener.ServerInitListener
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
-    private val clip = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    private lateinit var clip: ClipboardManager
     private var isMyRound = false
+    private val onReceiveMessageListener = object : OnReceiveMessageListener {
+        override fun onReceiveMessage(message: String, details: String?) {
+            when (message) {
+                Message.CONNECTED -> {
+                    showConnected()
+                }
+                Message.DISCONNECTED -> {
+                    showDisconnected()
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_main)
+        clip = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         initUI()
     }
 
@@ -52,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                 when (position) {
                     0 -> {
                         communicator = Server()
+                        communicator?.setOnReceiveMessageListener(onReceiveMessageListener)
                         (communicator as Server).initReceiver(object : ServerInitListener {
                             override fun onSuccess(address: String) {
                                 showOpenServerDialog(address)
@@ -93,13 +105,16 @@ class MainActivity : AppCompatActivity() {
             .setTitleBold(true)
             .setTitleLeft(true)
             .setOkText("连接")
+            .setCancelText("取消")
             .setEditDialogListener(object : EditDialog.OnEditDialogClickListener {
                 override fun onOkClick(result: String?) {
                     communicator = Customer()
+                    communicator?.setOnReceiveMessageListener(onReceiveMessageListener)
                     if (result != null) {
                         (communicator as Customer).connect(result)
                         showToast("已连接")
-                        //TODO 通知对方
+                        showConnected()
+                        communicator?.sendMessage(Message.CONNECTED)
                     } else {
                         showToast("请输入服务器地址")
                     }
@@ -112,14 +127,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun beginObserve() {
-        communicator?.getMessage()?.observe(this, object : Observer<String> {
-            override fun onChanged(t: String?) {
-
-            }
-        })
-    }
-
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
@@ -127,5 +134,13 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         communicator?.release()
+    }
+
+    override fun showConnected() {
+        game_bg.setBackgroundResource(R.color.colorPrimary)
+    }
+
+    override fun showDisconnected() {
+        game_bg.setBackgroundResource(R.color.white)
     }
 }

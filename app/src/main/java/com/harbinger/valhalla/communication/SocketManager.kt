@@ -1,7 +1,6 @@
 package com.harbinger.valhalla.communication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.harbinger.valhalla.listener.CommunicatorListener
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -28,7 +27,7 @@ class SocketManager private constructor() {
 
     companion object {
         lateinit var url: String
-        val message = MutableLiveData<String>()
+        lateinit var communicatorListener: CommunicatorListener
         val instance: WebSocket by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { SocketManager().getSocket() }
     }
 
@@ -41,7 +40,12 @@ class SocketManager private constructor() {
         return client.newWebSocket(request, object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
-                message.value = text
+                communicatorListener.onGetMessage(text)
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                super.onClosed(webSocket, code, reason)
+                communicatorListener.onDisconnected()
             }
         })
     }

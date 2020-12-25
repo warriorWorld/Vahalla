@@ -1,7 +1,6 @@
 package com.harbinger.valhalla.communication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.harbinger.valhalla.listener.CommunicatorListener
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
@@ -13,8 +12,8 @@ import java.nio.ByteBuffer
  */
 class MyWebSocketServer(addr: InetSocketAddress) : WebSocketServer(addr) {
     val TAG = "MyWebSocketServer"
-    val message = MutableLiveData<String>()
     lateinit var sender: WebSocket
+    lateinit var communicatorListener: CommunicatorListener
 
     override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
 //        Log.d(TAG, "Server onOpen")
@@ -27,12 +26,13 @@ class MyWebSocketServer(addr: InetSocketAddress) : WebSocketServer(addr) {
     override fun onClose(conn: WebSocket?, code: Int, reason: String?, remote: Boolean) {
 //        Log.d(TAG, "Server onClose")
         println("Server onClose")
+        communicatorListener.onDisconnected()
     }
 
-    override fun onMessage(conn: WebSocket?, message: String?) {
+    override fun onMessage(conn: WebSocket, message: String) {
 //        Log.d(TAG, "Server onMessage $message")
         println("Server onMessage $message")
-        this.message.value = message
+        communicatorListener.onGetMessage(message)
     }
 
     override fun onMessage(conn: WebSocket?, message: ByteBuffer?) {
@@ -49,9 +49,5 @@ class MyWebSocketServer(addr: InetSocketAddress) : WebSocketServer(addr) {
     override fun onStart() {
 //        Log.d(TAG, "Server onStart")
         println("Server onStart")
-    }
-
-    fun getMessage(): LiveData<String> {
-        return message
     }
 }
