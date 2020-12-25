@@ -6,4 +6,5 @@ package com.harbinger.valhalla.communication
 object Message {
     const val CONNECTED = "CONNECTED"
     const val DISCONNECTED = "DISCONNECTED"
+    const val START = "START"
 }

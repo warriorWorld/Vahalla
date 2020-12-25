@@ -2,10 +2,15 @@ package com.harbinger.valhalla.scene
 
 import android.os.Bundle
 import android.text.ClipboardManager
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.harbinger.valhalla.R
+import com.harbinger.valhalla.adapter.HpAdapter
 import com.harbinger.valhalla.communication.*
 import com.harbinger.valhalla.dialog.*
 import com.harbinger.valhalla.listener.OnListDialogClickListener
@@ -16,6 +21,8 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
     private lateinit var clip: ClipboardManager
     private var isMyRound = false
+    private val hpAdapter = HpAdapter(this)
+    private val enemyHpAdapter = HpAdapter(this)
     private val onReceiveMessageListener = object : OnReceiveMessageListener {
         override fun onReceiveMessage(message: String, details: String?) {
             when (message) {
@@ -24,6 +31,9 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
                 }
                 Message.DISCONNECTED -> {
                     showDisconnected()
+                }
+                Message.START -> {
+                    showStartScene()
                 }
             }
         }
@@ -42,11 +52,23 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     }
 
     private fun initUI() {
+        hp_rcv.layoutManager = GridLayoutManager(this, 5)
+        hp_rcv.isFocusableInTouchMode = false
+        hp_rcv.isFocusable = false
+        hp_rcv.setHasFixedSize(true)
+        hp_rcv.adapter = hpAdapter
+        enemy_hp_rcv.layoutManager = GridLayoutManager(this, 5)
+        enemy_hp_rcv.isFocusableInTouchMode = false
+        enemy_hp_rcv.isFocusable = false
+        enemy_hp_rcv.setHasFixedSize(true)
+        enemy_hp_rcv.adapter = enemyHpAdapter
+        enemyHpAdapter.setImageRes(R.drawable.ic_heart2)
         settings_iv.setOnClickListener {
             showOptionsDialog()
         }
         start_iv.setOnClickListener {
-            communicator?.sendMessage(Message.CONNECTED)
+            communicator?.sendMessage(Message.START)
+            showStartScene()
         }
     }
 
@@ -140,10 +162,23 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     }
 
     override fun showConnected() {
-        runOnUiThread { game_bg.setBackgroundResource(R.color.colorPrimary) }
+        runOnUiThread { start_iv.setImageResource(R.drawable.ic_start) }
     }
 
     override fun showDisconnected() {
-        runOnUiThread { game_bg.setBackgroundResource(R.color.white) }
+        runOnUiThread {
+            control_group.visibility = View.VISIBLE
+            game_group.visibility = View.GONE
+            start_iv.setImageResource(R.drawable.ic_start_gray)
+        }
+    }
+
+    override fun showStartScene() {
+        runOnUiThread {
+            control_group.visibility = View.GONE
+            game_group.visibility = View.VISIBLE
+            hpAdapter.setRemainHp(15)
+            enemyHpAdapter.setRemainHp(15)
+        }
     }
 }

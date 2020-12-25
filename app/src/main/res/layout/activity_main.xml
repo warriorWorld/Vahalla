@@ -18,13 +18,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="enemy_dice_rcv,enemy_gods_rcv,enemy_hp_rcv,enemy_sacrificial_iv,enemy_sacrificial_tv,dice_rcv,gods_rcv,hp_rcv,sacrificial_iv,sacrificial_tv" />
+        app:constraint_referenced_ids="tip_tv,enemy_dice_rcv,enemy_gods_rcv,enemy_hp_rcv,enemy_sacrificial_iv,enemy_sacrificial_tv,dice_rcv,gods_rcv,hp_rcv,sacrificial_iv,sacrificial_tv" />
 
     <ImageView
         android:id="@+id/start_iv"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_start"
+        android:src="@drawable/ic_start_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -42,8 +42,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemy_hp_rcv"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -63,10 +63,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="15dp"
         android:src="@drawable/ic_ox"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enemy_gods_rcv" />
+        app:layout_constraintTop_toBottomOf="@+id/enemy_hp_rcv" />
 
     <TextView
         android:id="@+id/enemy_sacrificial_tv"
@@ -91,6 +91,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <TextView
+        android:id="@+id/tip_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dice_rcv"
         android:layout_width="0dp"
@@ -104,8 +115,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hp_rcv"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -124,10 +135,10 @@
         android:id="@+id/sacrificial_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/ic_sheep"
-        app:layout_constraintBottom_toTopOf="@+id/gods_rcv"
+        app:layout_constraintBottom_toTopOf="@+id/hp_rcv"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
