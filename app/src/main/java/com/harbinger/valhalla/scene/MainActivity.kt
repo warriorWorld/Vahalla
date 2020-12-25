@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
                     communicator?.setOnReceiveMessageListener(onReceiveMessageListener)
                     if (result != null) {
                         (communicator as Customer).connect(result)
-                        showToast("已连接")
+                        showToast("已连接至$result")
                         showConnected()
                         communicator?.sendMessage(Message.CONNECTED)
                     } else {
@@ -140,10 +140,10 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     }
 
     override fun showConnected() {
-        game_bg.setBackgroundResource(R.color.colorPrimary)
+        runOnUiThread { game_bg.setBackgroundResource(R.color.colorPrimary) }
     }
 
     override fun showDisconnected() {
-        game_bg.setBackgroundResource(R.color.white)
+        runOnUiThread { game_bg.setBackgroundResource(R.color.white) }
     }
 }
