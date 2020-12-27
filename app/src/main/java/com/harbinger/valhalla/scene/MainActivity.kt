@@ -10,19 +10,26 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.harbinger.valhalla.R
+import com.harbinger.valhalla.adapter.GodsAdapter
 import com.harbinger.valhalla.adapter.HpAdapter
+import com.harbinger.valhalla.bean.GodBean
 import com.harbinger.valhalla.communication.*
 import com.harbinger.valhalla.dialog.*
 import com.harbinger.valhalla.listener.OnListDialogClickListener
 import com.harbinger.valhalla.listener.ServerInitListener
+import com.harbinger.valhalla.maker.GodMaker
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
     private lateinit var clip: ClipboardManager
     private var isMyRound = false
+    private val godsList = ArrayList<GodBean>()
+    private val enemyGodsList = ArrayList<GodBean>()
     private val hpAdapter = HpAdapter(this)
+    private val godsAdapter = GodsAdapter(this)
     private val enemyHpAdapter = HpAdapter(this)
+    private val enemyGodsAdapter = GodsAdapter(this)
     private val onReceiveMessageListener = object : OnReceiveMessageListener {
         override fun onReceiveMessage(message: String, details: String?) {
             when (message) {
@@ -48,7 +55,16 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         )
         setContentView(R.layout.activity_main)
         clip = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        initMyGodsList()
         initUI()
+    }
+
+    private fun initMyGodsList() {
+        godsList.add(GodMaker.getLifeGod())
+        godsList.add(GodMaker.getHelmetHater())
+        //TODO 通过commicator获取
+        enemyGodsList.add(GodMaker.getLifeGod())
+        enemyGodsList.add(GodMaker.getHelmetHater())
     }
 
     private fun initUI() {
@@ -63,6 +79,16 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         enemy_hp_rcv.setHasFixedSize(true)
         enemy_hp_rcv.adapter = enemyHpAdapter
         enemyHpAdapter.setImageRes(R.drawable.ic_heart2)
+        gods_rcv.layoutManager = LinearLayoutManager(this)
+        gods_rcv.isFocusableInTouchMode = false
+        gods_rcv.isFocusable = false
+        gods_rcv.setHasFixedSize(true)
+        gods_rcv.adapter = godsAdapter
+        enemy_gods_rcv.layoutManager = LinearLayoutManager(this)
+        enemy_gods_rcv.isFocusableInTouchMode = false
+        enemy_gods_rcv.isFocusable = false
+        enemy_gods_rcv.setHasFixedSize(true)
+        enemy_gods_rcv.adapter = enemyGodsAdapter
         settings_iv.setOnClickListener {
             showOptionsDialog()
         }
@@ -179,6 +205,10 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
             game_group.visibility = View.VISIBLE
             hpAdapter.setRemainHp(15)
             enemyHpAdapter.setRemainHp(15)
+            godsAdapter.setGods(godsList)
+            godsAdapter.notifyDataSetChanged()
+            enemyGodsAdapter.setGods(enemyGodsList)
+            enemyGodsAdapter.notifyDataSetChanged()
         }
     }
 }
