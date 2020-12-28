@@ -6,5 +6,5 @@ package com.harbinger.valhalla.scene
 interface IValhallaScene {
     fun showConnected()
     fun showDisconnected()
-    fun showStartScene()
+    fun startGame()
 }

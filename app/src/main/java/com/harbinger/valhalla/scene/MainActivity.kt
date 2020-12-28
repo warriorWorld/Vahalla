@@ -9,13 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.harbinger.valhalla.R
 import com.harbinger.valhalla.adapter.GodsAdapter
 import com.harbinger.valhalla.adapter.HpAdapter
 import com.harbinger.valhalla.bean.GodBean
+import com.harbinger.valhalla.bean.MessageBean
 import com.harbinger.valhalla.communication.*
 import com.harbinger.valhalla.dialog.*
+import com.harbinger.valhalla.gameplay.GameState
 import com.harbinger.valhalla.listener.OnListDialogClickListener
 import com.harbinger.valhalla.listener.ServerInitListener
 import com.harbinger.valhalla.maker.GodMaker
@@ -27,12 +28,14 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
     private lateinit var clip: ClipboardManager
     private val isMyRound = MutableLiveData<Boolean>()
+    private val currentState = MutableLiveData<GameState>()
     private val godsList = ArrayList<GodBean>()
     private val enemyGodsList = ArrayList<GodBean>()
     private val hpAdapter = HpAdapter(this)
     private val godsAdapter = GodsAdapter(this)
     private val enemyHpAdapter = HpAdapter(this)
     private val enemyGodsAdapter = GodsAdapter(this)
+
     private val onReceiveMessageListener = object : OnReceiveMessageListener {
         override fun onReceiveMessage(message: String, details: String?) {
             when (message) {
@@ -43,7 +46,10 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
                     showDisconnected()
                 }
                 Message.START -> {
-                    showStartScene()
+                    startGame()
+                }
+                Message.ROUND_AFFILIATION -> {
+                    isMyRound.value = details?.equals("true")
                 }
             }
         }
@@ -59,7 +65,47 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         setContentView(R.layout.activity_main)
         clip = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         initMyGodsList()
+        observeGameState()
         initUI()
+    }
+
+    private fun observeGameState() {
+        isMyRound.observe(this, androidx.lifecycle.Observer {
+            if (it) {
+                tip_tv.text = "你的回合"
+                dice_iv.visibility = View.VISIBLE
+                end_iv.visibility = View.VISIBLE
+            } else {
+                tip_tv.text = "对方回合"
+                dice_iv.visibility = View.GONE
+                end_iv.visibility = View.GONE
+            }
+        })
+        currentState.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                GameState.DICE1 -> {
+
+                }
+                GameState.DICE2 -> {
+
+                }
+                GameState.DICE3 -> {
+
+                }
+                GameState.CHOOSE1 -> {
+
+                }
+                GameState.CHOOSE2 -> {
+
+                }
+                GameState.BLISS -> {
+
+                }
+                GameState.FIGHT -> {
+
+                }
+            }
+        })
     }
 
     private fun initMyGodsList() {
@@ -95,19 +141,12 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         enemy_gods_rcv.setHasFixedSize(true)
         enemy_gods_rcv.adapter = enemyGodsAdapter
 
-        isMyRound.observe(this, androidx.lifecycle.Observer {
-            if (it) {
-                tip_tv.text = "你的回合"
-            } else {
-                tip_tv.text = ""
-            }
-        })
         settings_iv.setOnClickListener {
             showOptionsDialog()
         }
         start_iv.setOnClickListener {
             communicator?.sendMessage(Message.START)
-            showStartScene()
+            startGame()
         }
     }
 
@@ -216,7 +255,15 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         }
     }
 
-    override fun showStartScene() {
+    override fun startGame() {
+        if (null != isMyRound.value) {
+            communicator?.sendMessage(
+                MessageBean(
+                    Message.ROUND_AFFILIATION,
+                    isMyRound.value.toString()
+                )
+            )
+        }
         runOnUiThread {
             control_group.visibility = View.GONE
             game_group.visibility = View.VISIBLE
