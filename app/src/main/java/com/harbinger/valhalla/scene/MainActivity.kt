@@ -79,12 +79,14 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         enemy_hp_rcv.setHasFixedSize(true)
         enemy_hp_rcv.adapter = enemyHpAdapter
         enemyHpAdapter.setImageRes(R.drawable.ic_heart2)
-        gods_rcv.layoutManager = LinearLayoutManager(this)
+        gods_rcv.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         gods_rcv.isFocusableInTouchMode = false
         gods_rcv.isFocusable = false
         gods_rcv.setHasFixedSize(true)
         gods_rcv.adapter = godsAdapter
-        enemy_gods_rcv.layoutManager = LinearLayoutManager(this)
+        enemy_gods_rcv.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         enemy_gods_rcv.isFocusableInTouchMode = false
         enemy_gods_rcv.isFocusable = false
         enemy_gods_rcv.setHasFixedSize(true)

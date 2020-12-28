@@ -10,19 +10,21 @@
 
     <ImageView
         android:id="@+id/god_iv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_god" />
 
     <TextView
         android:id="@+id/name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/god_iv"
         android:layout_centerInParent="true"
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:text="奥丁"
         android:textColor="@color/main_text_color"
-        android:textSize="16sp" />
+        android:textSize="12sp" />
 </RelativeLayout>
