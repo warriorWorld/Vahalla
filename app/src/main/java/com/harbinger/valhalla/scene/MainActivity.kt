@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +20,13 @@ import com.harbinger.valhalla.listener.OnListDialogClickListener
 import com.harbinger.valhalla.listener.ServerInitListener
 import com.harbinger.valhalla.maker.GodMaker
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
     private lateinit var clip: ClipboardManager
-    private var isMyRound = false
+    private val isMyRound = MutableLiveData<Boolean>()
     private val godsList = ArrayList<GodBean>()
     private val enemyGodsList = ArrayList<GodBean>()
     private val hpAdapter = HpAdapter(this)
@@ -91,6 +94,14 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         enemy_gods_rcv.isFocusable = false
         enemy_gods_rcv.setHasFixedSize(true)
         enemy_gods_rcv.adapter = enemyGodsAdapter
+
+        isMyRound.observe(this, androidx.lifecycle.Observer {
+            if (it) {
+                tip_tv.text = "你的回合"
+            } else {
+                tip_tv.text = ""
+            }
+        })
         settings_iv.setOnClickListener {
             showOptionsDialog()
         }
@@ -115,6 +126,10 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
             override fun onItemClick(position: Int) {
                 when (position) {
                     0 -> {
+                        //固定由服务端摇骰决定谁先
+                        val random = Random()
+                        isMyRound.value = random.nextBoolean()
+
                         communicator = Server()
                         communicator?.setOnReceiveMessageListener(onReceiveMessageListener)
                         (communicator as Server).initReceiver(object : ServerInitListener {
