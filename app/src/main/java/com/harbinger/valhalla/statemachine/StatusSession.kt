@@ -4,7 +4,7 @@ package com.harbinger.valhalla.statemachine
 /**
  * Created by acorn on 2020/12/24.
  */
-class StatusSession {
+open class StatusSession {
     private val TAG = "StatusSession";
     private val mTasks = HashMap<String, Creator>();
     private var mExecutor: TaskExecutor? = null

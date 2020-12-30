@@ -98,10 +98,13 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
                 GameState.CHOOSE2 -> {
 
                 }
-                GameState.BLISS -> {
+                GameState.CHOOSE_BLISS -> {
 
                 }
                 GameState.FIGHT -> {
+
+                }
+                GameState.BLISS -> {
 
                 }
             }
