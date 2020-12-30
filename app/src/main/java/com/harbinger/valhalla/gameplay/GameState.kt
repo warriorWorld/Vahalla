@@ -11,16 +11,5 @@ object GameState {
     const val CHOOSE_BLISS = "CHOOSE_BLISS"
     const val FIGHT = "FIGHT"
     const val BLISS = "BLISS"
-    const val FINISH="FINISH"
-}
-
-enum class GameStateDelete {
-    DICE1,
-    DICE2,
-    DICE3,
-    CHOOSE1,
-    CHOOSE2,
-    CHOOSE_BLISS,
-    FIGHT,
-    BLISS
+    const val FINISH = "FINISH"
 }

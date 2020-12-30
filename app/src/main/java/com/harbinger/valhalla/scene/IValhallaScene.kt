@@ -7,4 +7,5 @@ interface IValhallaScene {
     fun showConnected()
     fun showDisconnected()
     fun startGame()
+    fun setOnEndClick(method: () -> Unit)
 }

@@ -28,13 +28,13 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
     private var communicator: ICommunicator? = null
     private lateinit var clip: ClipboardManager
     private val isMyRound = MutableLiveData<Boolean>()
-    private val currentState = MutableLiveData<GameState>()
     private val godsList = ArrayList<GodBean>()
     private val enemyGodsList = ArrayList<GodBean>()
     private val hpAdapter = HpAdapter(this)
     private val godsAdapter = GodsAdapter(this)
     private val enemyHpAdapter = HpAdapter(this)
     private val enemyGodsAdapter = GodsAdapter(this)
+    private var onEndClick: () -> Unit = {}
 
     private val onReceiveMessageListener = object : OnReceiveMessageListener {
         override fun onReceiveMessage(message: String, details: String?) {
@@ -81,34 +81,6 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
                 end_iv.visibility = View.GONE
             }
         })
-        currentState.observe(this, androidx.lifecycle.Observer {
-            when (it) {
-                GameState.DICE1 -> {
-
-                }
-                GameState.DICE2 -> {
-
-                }
-                GameState.DICE3 -> {
-
-                }
-                GameState.CHOOSE1 -> {
-
-                }
-                GameState.CHOOSE2 -> {
-
-                }
-                GameState.CHOOSE_BLISS -> {
-
-                }
-                GameState.FIGHT -> {
-
-                }
-                GameState.BLISS -> {
-
-                }
-            }
-        })
     }
 
     private fun initMyGodsList() {
@@ -150,6 +122,9 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
         start_iv.setOnClickListener {
             communicator?.sendMessage(Message.START)
             startGame()
+        }
+        end_iv.setOnClickListener {
+            onEndClick.invoke()
         }
     }
 
@@ -277,5 +252,9 @@ class MainActivity : AppCompatActivity(), IValhallaScene {
             enemyGodsAdapter.setGods(enemyGodsList)
             enemyGodsAdapter.notifyDataSetChanged()
         }
+    }
+
+    override fun setOnEndClick(method: () -> Unit) {
+        this.onEndClick = method
     }
 }

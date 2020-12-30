@@ -48,6 +48,7 @@ class ValhallaSession(var ui: IValhallaScene) : StatusSession() {
 
 class IdleStatus(mStatus: String, val ui: IValhallaScene) : StatusTask(mStatus) {
     override fun onDoing(res: Any?, lastStatus: String?) {
+
     }
 
     override fun onFinally(res: Any?, nextStatus: String) {
